@@ -132,6 +132,9 @@ def crimes():
 
         return render_template("crimes.html", add_crime_form=add_crime_form, crimes=all_crimes)
 
+    if session['role'] == 3:
+        return redirect(url_for('index'))
+
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -169,6 +172,9 @@ def profile():
 
         return render_template("profile.html", user=user, update_crime_of_villain_form=update_crime_of_villain_form,
                                crimes=crimes_for_villain)
+
+    if session['role'] == 3:
+        return redirect(url_for('index'))
 
 
 @app.route('/logout')
