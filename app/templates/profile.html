@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Преступление</title>
+</head>
+<body>
+    <div class="cap-links">
+        <a href="{{ url_for('index') }}">Главная страница</a>
+        <a href="{{ url_for('logout') }}">Выйти из системы</a>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+     <ul>
+         {% for message in messages %}
+         <li>{{ message }}</li>
+         {% endfor %}
+     </ul>
+    {% endif %}
+    {% endwith %}
+    <p>Логин пользователя - {{ user.User.login_of_user }}</p>
+    <p>Роль пользователя - {{ user.RoleOfUser.name_of_role }}</p>
+    <p>ФИО пользователя - {{ user.User.fio_of_user }}</p>
+    <p>Биография пользователя - {{ user.User.biography_of_user }}</p>
+    {% if session['role'] == 1 %}
+    <p>Ваша способность - {{ user.Superhero.ability_of_superhero }}</p><br>
+        <form class="update-ability-of-hero-form" action="{{ url_for('profile') }}" method="post">
+            {{ update_ability_of_hero_form.text_of_ability(placeholder_="Способность героя") }}<br>
+            {{ update_ability_of_hero_form.submit_update() }}
+        </form>
+    {% if crimes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Описание преступления</th>
+                    <th>Дата преступления</th>
+                    <th>Время преступления</th>
+                    <th>Место преступления</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for crime in crimes %}
+                <tr>
+                    <td>{{ crime.Crime.text_of_crime }}</td>
+                    <td>{{ crime.Crime.date_of_crime }}</td>
+                    <td>{{ crime.Crime.time_of_crime }}</td>
+                    <td>{{ crime.PlaceOfCrime.name_of_place_of_crime }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    {% elif not crimes %}
+        <p>Вы ненастоящий супергерой. Помогите этому городу хоть один раз в жизни:(</p>
+    {% endif %}
+    {% endif %}
+    {% if session['role'] == 2 %}
+    <p>Ваше любимое злодейство - {{ user.Villain.favorite_crime_of_villain }}</p><br>
+        <form class="update-favourite-crime-of-villain" action="{{ url_for('profile') }}" method="post">
+            {{ update_crime_of_villain_form.text_of_crime(placeholder_="Любимое злодейство") }}<br>
+            {{ update_crime_of_villain_form.submit_update() }}
+        </form>
+    {% if crimes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Описание преступления</th>
+                    <th>Дата преступления</th>
+                    <th>Время преступления</th>
+                    <th>Место преступления</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for crime in crimes %}
+                <tr>
+                    <td>{{ crime.Crime.text_of_crime }}</td>
+                    <td>{{ crime.Crime.date_of_crime }}</td>
+                    <td>{{ crime.Crime.time_of_crime }}</td>
+                    <td>{{ crime.PlaceOfCrime.name_of_place_of_crime }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    {% elif not crimes %}
+        <p>Вы ненастоящий злодей. Совершите преступление хоть один раз в жизни:(</p>
+    {% endif %}
+    {% endif %}
+</body>
+</html>

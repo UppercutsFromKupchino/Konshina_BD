@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить место преступления</title>
+</head>
+<body>
+    <div class="cap-links">
+        <a href="{{ url_for('index') }}">Главная страница</a>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+     <ul>
+         {% for message in messages %}
+         <li>{{ message }}</li>
+         {% endfor %}
+     </ul>
+    {% endif %}
+    {% endwith %}
+    <form class="add-place-of-crime-form" action="{{ url_for('place_of_crime') }}" method="post">
+{#        {{ add_place_of_crime.hidden_tag() }}#}
+        {{ add_place_of_crime.place(placeholder_="Название места") }}<br>
+        {{ add_place_of_crime.submit_add() }}
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Название места</th>
+                <th>Удалить место</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for place in places %}
+            <tr>
+                <td>{{ place.name_of_place_of_crime }}</td>
+                <td>
+                    <form class="delete-place-of-crime-form" action="{{ url_for('place_of_crime') }}" method="post">
+                        {{ delete_place_of_crime.id_of_place(value=place.id_of_place_of_crime) }}
+                        {{ delete_place_of_crime.submit_delete() }}
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

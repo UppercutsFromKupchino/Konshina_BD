@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список преступлений</title>
+</head>
+<body>
+    <div class="cap-links">
+        <a href="{{ url_for('index') }}">Главная страница</a>
+        <a href="{{ url_for('logout') }}">Выйти из системы</a>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+     <ul>
+         {% for message in messages %}
+         <li>{{ message }}</li>
+         {% endfor %}
+     </ul>
+    {% endif %}
+    {% endwith %}
+    {% if session['role'] == 1 %}
+    {% if crimes %}
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">Описание преступления</th>
+                <th scope="col">Место преступления</th>
+                <th scope="col">Дата преступления</th>
+                <th scope="col">Время преступления</th>
+                <th scope="col">Остановить злодея!</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for crime in crimes %}
+            <tr>
+                <td>{{ crime.Crime.text_of_crime }}</td>
+                <td>{{ crime.PlaceOfCrime.name_of_place_of_crime }}</td>
+                <td>{{ crime.Crime.date_of_crime }}</td>
+                <td>{{ crime.Crime.time_of_crime }}</td>
+                <td>
+                    <form class="execute-crime-form" action="{{ url_for('crimes') }}" method="post">
+                        {{ execute_crime_form.id_of_crime(value=crime.Crime.id_of_crime) }}
+                        {{ execute_crime_form.submit_execute() }}
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% elif not crimes %}
+    <p>Преступники отлынивают:( Надеюсь, вы не умрёте со скуки!</p>
+    {% endif %}
+    {% endif %}
+    {% if session['role'] == 2 %}
+        <form class="add-crime-form" action="{{ url_for('crimes') }}" method="post">
+            {{ add_crime_form.text(placeholder_="Описание преступления") }}<br>
+            {{ add_crime_form.place() }}<br>
+            {{ add_crime_form.date() }}<br>
+            {{ add_crime_form.time() }}<br>
+            {{ add_crime_form.submit_add() }}<br>
+        </form>
+    {% if crimes %}
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">Описание преступления</th>
+                <th scope="col">Место преступления</th>
+                <th scope="col">Дата преступления</th>
+                <th scope="col">Время преступления</th>
+                <th scope="col">Перейти к преступлению</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for crime in crimes %}
+            <tr>
+                <td>{{ crime.Crime.text_of_crime }}</td>
+                <td>{{ crime.PlaceOfCrime.name_of_place_of_crime }}</td>
+                <td>{{ crime.Crime.date_of_crime }}</td>
+                <td>{{ crime.Crime.time_of_crime }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% elif not crimes %}
+    <p>Этому городу нужен хоть один активный преступник! Все ленятся:(</p>
+    {% endif %}
+    {% endif %}
+</body>
+</html>
