@@ -231,12 +231,11 @@ class Crime(db.Model):
             return redirect(url_for('crimes'))
 
     @staticmethod
-    def get_crimes_wo_current_hero(id_hero):
+    def get_crimes_wo_current_hero():
         try:
             query = db.session.query(Crime, PlaceOfCrime)
             query = query.join(PlaceOfCrime, Crime.id_of_place_of_crime == PlaceOfCrime.id_of_place_of_crime)
-            query = query.join(SuperheroCrime, SuperheroCrime.id_of_crime == Crime.id_of_crime)
-            query = query.filter(SuperheroCrime.id_of_superhero != id_hero)
+            query = query.outerjoin(SuperheroCrime, SuperheroCrime.id_of_crime == Crime.id_of_crime)
             return query.all()
         except:
             flash('Ошибка взаимодействия с базой данных! Попробуйте позже!')
@@ -278,5 +277,17 @@ class SuperheroCrime(db.Model):
             db.session.commit()
             flash('Злодеи не дремлют! Супергерои тоже:)')
         except:
-            flash('Ошибка взаимодействия с базой данных! Попробуйте позже!')
+            flash('Вы уже пытаетесь помешать этому злодею!')
+            return redirect(url_for('crimes'))
+
+    @staticmethod
+    def get_superhero_crime(id_superhero, id_crime):
+        try:
+            query = db.session.query(SuperheroCrime)
+            query = query.filter(SuperheroCrime.id_of_superhero == id_superhero)
+            query = query.filter(SuperheroCrime.id_of_crime == id_crime)
+            query = query.first()
+            return query
+        except:
+            flash('Вы уже пытаетесь помешать этому злодею!')
             return redirect(url_for('crimes'))

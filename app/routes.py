@@ -106,11 +106,21 @@ def crimes():
     if session['role'] == 1:
 
         execute_crime_form = ExecuteCrimeForm()
-        all_crimes = Crime.get_crimes_wo_current_hero(current_user.get_id())
+        all_crimes = Crime.get_crimes_wo_current_hero()
 
         if execute_crime_form.submit_execute.data:
 
-            SuperheroCrime.execute_crime(execute_crime_form.id_of_crime.data, current_user.get_id())
+            superhero_crime = SuperheroCrime.get_superhero_crime(current_user.get_id(),
+                                                                 execute_crime_form.id_of_crime.data)
+
+            if superhero_crime:
+                flash('Вы уже присоединялись к борьбе с этим преступлением')
+                return redirect(url_for('crimes'))
+
+            elif not superhero_crime:
+
+                SuperheroCrime.execute_crime(execute_crime_form.id_of_crime.data, current_user.get_id())
+                return redirect(url_for('crimes'))
 
         return render_template("crimes.html", crimes=all_crimes, execute_crime_form=execute_crime_form)
 
